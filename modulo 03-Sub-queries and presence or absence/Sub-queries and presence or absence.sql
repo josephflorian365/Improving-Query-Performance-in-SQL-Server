@@ -1,18 +1,22 @@
 /**Sub-queries and presence or absence**/
 
-/*1.-Subconsulta de la tabla Production.Product con la tabla 
-externa Production.ProductModel mostrando la existencia de 
-el producto 'Long-sleeve logo jersey'*/
+/*1.-Mostrar la existencia del 
+producto 'Long-sleeve logo jersey'*/
 SELECT DISTINCT Name AS 'Nombre de modelo del producto'
-FROM Production.Product p
-WHERE EXISTS
+FROM 
+	Production.Product p
+WHERE 
+EXISTS
 (SELECT *
-FROM Production.ProductModel pm
-WHERE p.ProductModelID =pm.ProductModelID
-AND pm.Name = 'Long-sleeve logo jersey') ;
+FROM 
+	Production.ProductModel pm
+WHERE 
+	p.ProductModelID =pm.ProductModelID
+AND 
+	pm.Name = 'Long-sleeve logo jersey') ;
 
-/*2.-Obtener el nombre y número de cuenta de las tablas
-Sales.Customer y Sales.Store usando INNER JOIN */
+/*2.-Obtener el nombre y número 
+de cuenta de los clientes */
 SELECT ss.Name AS 'Nombre',
 sc.AccountNumber AS 'Número de cuenta'
 FROM 
@@ -22,9 +26,9 @@ INNER JOIN
      FROM Sales.Store ) AS ss
 	 on sc.StoreID = ss.BusinessEntityID
 
-/*3.-Mostrar los datos del campo ProductCategoryID 
-de la tabla Production.ProductCategory 
-si estan presentes en  Production.ProductSubCategory*/
+/*3.-Mostrar los datos identificadores
+que se encuentren en las categorias
+con las subcategorias*/
 SELECT 
 	ProductCategoryID
 FROM Production.ProductCategory
@@ -34,21 +38,21 @@ SELECT
 FROM 
 	Production.ProductSubCategory
 
-/*4.-Mostrar los datos del campo ProductCategoryID 
-de la tabla Production.ProductCategory 
-si no estan presentes en  Production.ProductSubCategory*/
+/*4.-Mostrar los datos que se encuentran 
+en los prroductos pero no en 
+inventario de productos*/
 SELECT 
-	ProductCategoryID
-FROM Production.ProductCategory
+	p.ProductId
+FROM 
+	Production.Product AS p
 EXCEPT
 SELECT 
-	ProductCategoryID
+	pinv.ProductID
 FROM 
-	Production.ProductSubCategory
+	Production.ProductInventory AS pinv
 
-/*5.-Mostrar el Id e la categorias y sus Nombres*/
+/*5.-Mostrar los nombres de las categorias*/
 SELECT 
-	ProductCategoryID,
 	Name
 FROM Production.ProductCategory
 WHERE ProductCategoryID IN
@@ -57,7 +61,9 @@ WHERE ProductCategoryID IN
 FROM 
 	Production.ProductSubCategory)
 
-/*6.-Mostrar el Id e la categorias y sus Nombres*/
+/*6.-Comprobar si existen registros 
+de las categ0orias de los productos 
+con sus respectivos nombres*/
 SELECT 
 	ProductCategoryID,
 	Name
@@ -69,7 +75,8 @@ FROM
 	WHERE 
 	pc.ProductCategoryID = psc.ProductCategoryID)
 
-/*7.-Visualizar cantidad de productos por cada subcategorías*/
+/*7.-Visualizar cantidad de productos 
+por cada subcategorías incluyendo nulos*/
 SELECT 
 DISTINCT COUNT(pp.ProductID) as 'Producto', 
 	ps.name AS 'Subcategoria' 
